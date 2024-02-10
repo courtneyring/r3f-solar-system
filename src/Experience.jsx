@@ -42,7 +42,7 @@ function Foo(props) {
 }
 
 
-const Model = () => {
+const Model = ({cameraControls}) => {
   const { scene, nodes, animations } = useGLTF('./models/solar_system.glb');
   let mixer = new THREE.AnimationMixer(scene);
   const scroll = useScroll()
@@ -86,14 +86,20 @@ const Model = () => {
           origin = destination;
           destination = new THREE.Vector3(); // create once an reuse it
           node.getWorldPosition(destination);
-          destination.x - 10;
-          destination.y - 10;
-          destination.z - 10;
-          state.camera.position.lerp(target.x - 10, target.y - 10, target.z - 10);
+          // destination.x - 10;
+          // destination.y - 10;
+          // destination.z - 10;
+          // state.camera.position.lerp(target.x - 10, target.y - 10, target.z - 10);
           // state.camera.lookAt(target)
 
         }
       })
+      // cameraControls.setLookAt(1, 2, 3, 1, 1, 0, true)
+      console.log(destination)
+      // cameraControls.current.enabled=true
+      cameraControls.current.setLookAt(destination.x-10, destination.y-10, destination.z-10, destination.x, destination.y, destination.z, true)
+      // cameraControls.current.enabled=false
+      // cameraControls.current.rotateTo(destination)
     }
     // else {
     //   state.camera.position.set(20, 20, 20)
@@ -113,20 +119,24 @@ const Model = () => {
     // let newX = THREE.MathUtils.damp(state.camera.position.x, x, 4, delta);
     // let newY = THREE.MathUtils.damp(state.camera.position.y, y, 4, delta);
     // let newZ = THREE.MathUtils.damp(state.camera.position.x, x, 4, delta);
-    var target = destination;
-    let offset = {x: 50, y:10, z:50};
-    // target.x = 0
-    // target.z = 0
-    let PI = Math.PI * 2;
-    var scroll_angle = PI * progress;
-    state.camera.position.x = target.x + offset.x * (Math.sin(scroll_angle));
-    state.camera.position.z = target.z +offset.z * (Math.cos(scroll_angle));
-    state.camera.position.y = target.y + offset.y;
-    state.camera.lookAt(target.x, target.y, target.z);
 
-    // state.camera.position.set(newX, newY, newZ);
 
-    // state.camera.lookAt(newX, newY, newZ)
+
+
+    // var target = destination;
+    // let offset = {x: 50, y:10, z:50};
+    // // target.x = 0
+    // // target.z = 0
+    // let PI = Math.PI * 2;
+    // var scroll_angle = PI * progress;
+    // state.camera.position.x = target.x + offset.x * (Math.sin(scroll_angle));
+    // state.camera.position.z = target.z +offset.z * (Math.cos(scroll_angle));
+    // state.camera.position.y = target.y + offset.y;
+    // state.camera.lookAt(target.x, target.y, target.z);
+
+    // // state.camera.position.set(newX, newY, newZ);
+
+    // // state.camera.lookAt(newX, newY, newZ)
     currentPage = activePage;
 
   })
@@ -152,6 +162,13 @@ export default function Experience() {
     camera.lookAt(0, 0, 0);
   })
 
+  useEffect(() => {
+    console.log(cameraControlsRef.current.mouseButtons)
+    cameraControlsRef.current.mouseButtons.wheel = 0;
+  },[])
+
+
+
   return (
     <>
       <ambientLight intensity={3} />
@@ -164,7 +181,7 @@ export default function Experience() {
             intensity={bloomIntensity}
             luminanceThreshold={luminanceThreshold}
           /> */}
-        <Model />
+        <Model cameraControls={cameraControlsRef}/>
         {/* </EffectComposer> */}
         {/* <Scroll>
           <Foo position={[0, 0, 0]} />
